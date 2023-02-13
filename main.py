@@ -21,7 +21,6 @@ if __name__ == "__main__":
         if opcion == 1:
             print("Dar de alta un cliente con sus datos personales")
             cliente.comprobar_tablas()
-            cliente.anadir_deportes()
             cliente.alta_cliente()
         elif opcion == 2:
             print("Dar de baja un cliente")

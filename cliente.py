@@ -237,34 +237,19 @@ def buscar_deportes_cliente(conn, dni):
         deportes.append(deporte)
     return deportes
 
-# anadir deportes si no existen con nombre y precio por hora de una lista
-def anadir_deportes():
+# Insertar deportes y su precio de una lista, comprobar antes de insertar si existe
+def insertar_deportes():
     conn = conectar_bd()
-    deportes = buscar_deportes(conn)
-    deportes_nuevos = []
-    deportes_nuevos.append(Deporte("futbol", 10))
-    deportes_nuevos.append(Deporte("tenis", 15))
-    deportes_nuevos.append(Deporte("baloncesto", 12))
-    for deporte in deportes_nuevos:
-        if deporte not in deportes:
-            insertar_deporte(conn, deporte)
+    deportes = [("Futbol", 10), ("Baloncesto", 15), ("Tenis", 20), ("Padel", 25)]
+    for deporte in deportes:
+        if not buscar_deporte(conn, deporte[0]):
+            insertar_deporte(conn, deporte[0], deporte[1])
     desconectar_bd(conn)
 
-def insertar_deporte(conn, deporte):
+def insertar_deporte(conn, nombre, precio):
     cursor = conn.cursor()
     sql = "INSERT INTO deporte(nombre, precio_hora) VALUES (%s, %s)"
-    datos = (deporte.nombre, deporte.precio_hora)
+    datos = (nombre, precio)
     cursor.execute(sql, datos)
     conn.commit()
     print("Deporte insertado correctamente")
-
-def buscar_deportes(conn):
-    cursor = conn.cursor()
-    sql = "SELECT nombre, precio_hora FROM deporte"
-    cursor.execute(sql)
-    rows = cursor.fetchall()
-    deportes = []
-    for row in rows:
-        deporte = Deporte(row[0], row[1])
-        deportes.append(deporte)
-    return deportes
