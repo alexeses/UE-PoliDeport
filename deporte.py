@@ -5,5 +5,3 @@ class Deporte:
 
     def __deportes__(self):
         return "Deporte: " + self.nombre + " Precio por hora: " + str(self.precio_hora)
-
-

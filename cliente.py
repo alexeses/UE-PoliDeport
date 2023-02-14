@@ -22,17 +22,11 @@ def conectar_bd():
             database=database_config.database,
             user=database_config.user,
             password=database_config.password,
-            port=database_config.port,
-            sslmode='require'
+            port=database_config.port
         )
         return conn
     except (Exception, psycopg2.Error) as error:
         print("Error de conexión a la base de datos", error)
-
-
-# Comprobar si están creadas las tablas y si no, las crea
-# Cliente (1,n)> nombre, dni, fecha_nacimiento, telefono
-# Deporte (1,n)> nombre, precio_hora
 
 def comprobar_tablas():
     conn = conectar_bd()
@@ -93,7 +87,6 @@ def insertar_cliente(conn, cliente):
 
 # Baja de cliente
 def baja_cliente():
-
     conn = conectar_bd()
     dni = input("Introduce el DNI del cliente: ")
     borrar_cliente(conn, dni)
@@ -187,12 +180,21 @@ def buscar_deporte(conn):
 
 
 def insertar_matricula(conn, cliente, deporte):
+    crear_tabla_matricula(conn)
     cursor = conn.cursor()
     sql = "INSERT INTO matricula(dni, nombre) VALUES (%s, %s)"
     datos = (cliente.dni, deporte.nombre)
     cursor.execute(sql, datos)
     conn.commit()
     print("Matrícula insertada correctamente")
+
+#Crear tabla matricula N:M con horario solo si no existe
+def crear_tabla_matricula(conn):
+    cursor = conn.cursor()
+    sql = "CREATE TABLE matricula (dni VARCHAR(9), nombre VARCHAR(50), horario VARCHAR(10))"
+    cursor.execute(sql)
+    conn.commit()
+    print("Tabla matricula creada correctamente")
 
 
 # Desmatricular cliente
@@ -237,19 +239,20 @@ def buscar_deportes_cliente(conn, dni):
         deportes.append(deporte)
     return deportes
 
-# Insertar deportes y su precio de una lista, comprobar antes de insertar si existe
+
+# Insertar deportes y su precio de una lista
 def insertar_deportes():
     conn = conectar_bd()
-    deportes = [("Futbol", 10), ("Baloncesto", 15), ("Tenis", 20), ("Padel", 25)]
+    deportes = [("Fútbol", 10), ("Baloncesto", 8), ("Tenis", 12), ("Padel", 10), ("Patinaje", 6)]
     for deporte in deportes:
-        if not buscar_deporte(conn, deporte[0]):
-            insertar_deporte(conn, deporte[0], deporte[1])
+        insertar_deporte(conn, deporte)
     desconectar_bd(conn)
 
-def insertar_deporte(conn, nombre, precio):
+def insertar_deporte(conn, deporte):
     cursor = conn.cursor()
     sql = "INSERT INTO deporte(nombre, precio_hora) VALUES (%s, %s)"
-    datos = (nombre, precio)
+    datos = (deporte[0], deporte[1])
     cursor.execute(sql, datos)
     conn.commit()
     print("Deporte insertado correctamente")
+

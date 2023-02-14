@@ -1,7 +1,7 @@
 import cliente
 
-def main_menu():
 
+def main_menu():
     print("Bienvenido al sistema de gestión de Polideportivo")
     print("Selecciona una opción:")
     print("1. Dar de alta un cliente con sus datos personales")
@@ -14,13 +14,16 @@ def main_menu():
     opcion = int(input("Opción: "))
     return opcion
 
+
 if __name__ == "__main__":
     opcion = 0
+
     while opcion != 7:
         opcion = main_menu()
+        cliente.comprobar_tablas()
         if opcion == 1:
             print("Dar de alta un cliente con sus datos personales")
-            cliente.comprobar_tablas()
+            cliente.insertar_deportes()
             cliente.alta_cliente()
         elif opcion == 2:
             print("Dar de baja un cliente")
@@ -30,10 +33,10 @@ if __name__ == "__main__":
             print("Mostrar los datos personales de un cliente o todos")
             opcion_ver = input("¿Deseas ver todos los clientes o solo uno? (T/S): ").upper()
             if opcion_ver == "T":
-                #Muestra todos los clientes
+                # Muestra todos los clientes
                 cliente.mostrar_clientes()
             elif opcion_ver == "S":
-                #Muestra solo un cliente
+                # Muestra solo un cliente
                 cliente.mostrar_cliente()
             else:
                 print("Opción inválida. Por favor, selecciona T o S.")
